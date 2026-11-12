@@ -2,13 +2,15 @@
 
 A free, installable web app (PWA) for learning to read the Hebrew Bible:
 picture lessons with audio, listen-and-tap practice, spaced review, a speaking coach,
-letter naming, tracing, and writing practice, and Scripture reading with tap-to-gloss.
+an alphabet guide (every letter and vowel mark, with audio), letter naming, tracing, and writing practice, and Scripture reading with tap-to-gloss.
 No accounts or server; progress stays on each device.
 
 ## Files
 
 - `index.html`, `styles.css`, `app.js` — the app
 - `data/lessons.js` — all lesson content (add new lessons here)
+- `data/alphabet.js` — the alphabet guide: letters, final forms, vowel marks
+- `img/` — lesson illustrations (WebP, 512px), one per word or scene
 - `audio/` — one `.mp3` per word or sentence, named to match each item's `audio` field
 - `sw.js` — offline support (generated; see below)
 - `manifest.webmanifest`, `icons/` — install-to-home-screen setup
@@ -17,7 +19,7 @@ No accounts or server; progress stays on each device.
 ## Adding a lesson
 
 1. Add the lesson object to `data/lessons.js`.
-2. Put its audio clips in `audio/`.
+2. Put its audio clips in `audio/` and its pictures in `img/` (set each item's `img`).
 3. Run `python tools/make_sw.py` so the new files work offline.
 
 ## Trying it on your computer
@@ -41,4 +43,4 @@ Any static host works. Two good options:
   always tell look-alikes apart (ב/כ, ד/ר, ה/ח/ת, ו/ז/ן, ס/ם), so it shows the outline to compare.
 
 - Audio is a placeholder ElevenLabs voice in modern pronunciation, to be replaced with recordings.
-- Pictures are emoji placeholders, to be replaced with lesson art.
+- Illustrations are made with OpenArt (Nano Banana 2) in one clay style, using a single reference image so the set stays consistent. Full-size originals are kept outside the repo in `D:\Dev\_davar_art`.

@@ -97,7 +97,9 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter() : null;
   const glyphs = str => seg ? [...seg.segment(str)].length : Math.ceil([...str].length / 2);
-  const picHTML = it => `<div class="pic ${it.size || ""} ${glyphs(it.pic) >= 3 ? "multi" : ""}" aria-hidden="true">${it.pic}</div>`;
+  const picHTML = (it, extra = "") => it.img
+    ? `<div class="pic img ${extra}" aria-hidden="true"><img src="${it.img}" alt="" decoding="async"></div>`
+    : `<div class="pic ${it.size || ""} ${glyphs(it.pic) >= 3 ? "multi" : ""} ${extra}" aria-hidden="true">${it.pic}</div>`;
   const isDone = id => progress.done.includes(id);
   const unlocked = id => id === 1 || isDone(id - 1) || isDone(id);
   const quizzable = it => it.quiz !== false;
@@ -115,7 +117,7 @@
   // Question types: "listen" = hear it, tap the picture; "read" = read the Hebrew, tap the picture;
   // "pick" = see the picture, tap the Hebrew.
   // two pictures can share an emoji only when both are size-contrasted (big vs small star)
-  const distinctPic = (a, b) => a.pic !== b.pic || (a.size && b.size && a.size !== b.size);
+  const distinctPic = (a, b) => (a.img || b.img) ? (a.img || a.pic) !== (b.img || b.pic) : (a.pic !== b.pic || (a.size && b.size && a.size !== b.size));
   function distractors(it, pool) {
     const same = pool.filter(x => x !== it && quizzable(x) && (x.kind === "sentence") === (it.kind === "sentence") && distinctPic(x, it));
     let extra = [];
@@ -270,7 +272,7 @@
   }
 
   /* ---------- letters: name, trace, write ---------- */
-  const segHTML = cur => `<div class="seg">${[["letters", "Name it"], ["letters-trace", "Trace"], ["letters-write", "Write"]]
+  const segHTML = cur => `<div class="seg">${[["letters", "Alphabet"], ["letters-name", "Name it"], ["letters-trace", "Trace"], ["letters-write", "Write"]]
     .map(([h, l]) => `<a href="#${h}" ${cur === h ? 'aria-current="page"' : ""}>${l}</a>`).join("")}</div>`;
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const GLYPH_FONT = '"Noto Sans Hebrew", "Arial Hebrew", "FreeSans", sans-serif';
@@ -405,6 +407,54 @@
     else { fb.className = "feedback bad"; fb.innerHTML = `Not quite.${like} Compare with the outline and try again.`; }
   }
 
+  /* ---------- alphabet guide ---------- */
+  const AB = window.DAVAR_ALEPHBET || [], VOW = window.DAVAR_VOWELS || [];
+  const abOf = ch => AB.find(a => a.ch === ch);
+  const hebSpans = str => esc(str).replace(/([\u0590-\u05FF]+)/g, '<span class="heb-inline">$1</span>');
+  const markLetter = (word, ch) => word.replace(new RegExp(ch + "[\\u0591-\\u05C7]*", "g"), m => `<mark>${m}</mark>`);
+  function infoHTML(ch) {
+    const a = abOf(ch); if (!a) return "";
+    const ex = a.ex && ITEMS[a.ex];
+    return `<div class="linfo">
+      <div class="linfo-head"><span class="ltr-big">${a.ch}</span>
+        <div><b>${esc(a.name)}</b> <span class="heb-inline">${a.heb}</span><div class="muted">Sound: ${esc(a.sound)} · Number value: ${a.value}</div></div>
+        <button class="say-name" data-audio="${a.audio}" aria-label="Hear the name ${esc(a.name)}">▶</button></div>
+      <p><b>How it's used.</b> ${hebSpans(a.use)}</p>
+      <p><b>Writing it.</b> ${hebSpans(a.write)}</p>
+      ${ex ? `<button class="ex" data-audio="${ex.audio}">${picHTML(ex, "sm")}<span class="ex-word">${markLetter(ex.h, a.ch)}</span><span class="muted">${esc(ex.en)}</span></button>` : ""}
+    </div>`;
+  }
+  const bindAudio = root => root && root.querySelectorAll("[data-audio]").forEach(b => b.onclick = () => play(b.dataset.audio));
+
+  let alphaSel = 0;
+  function alphabet() {
+    const tile = a => { const i = AB.indexOf(a); return `<button class="atile ${i === alphaSel ? "sel" : ""}" data-i="${i}"><span class="ach">${a.ch}</span><span class="aname">${esc(a.name)}</span></button>`; };
+    view().innerHTML = `<h2>Letters</h2>${segHTML("letters")}
+      <p class="sub">Hebrew has 22 letters, and all of them are consonants. It reads from right to left. Five letters change shape at the end of a word. Vowels are small marks added under, over, or inside the letters. Tap a letter to learn it.</p>
+      <div class="agrid" dir="rtl">${AB.filter(a => !a.final).map(tile).join("")}</div>
+      <p class="section-label">Final forms · used at the end of a word</p>
+      <div class="agrid" dir="rtl">${AB.filter(a => a.final).map(tile).join("")}</div>
+      <div class="card" id="adetail"></div>
+      <p class="section-label">Vowel marks</p>
+      <p class="sub">The Bible was first written with letters only. Centuries later, scribes added these marks so it would be read aloud the same way everywhere. Tap a row to hear an example word.</p>
+      <ul class="vlist">${VOW.map(v => { const ex = ITEMS[v.ex]; return `<li><button class="vrow" data-audio="${ex ? ex.audio : ""}"><span class="vmark">${v.mark}</span><span class="vmeta"><b>${esc(v.name)}</b><span>${esc(v.sound)}</span><small>${hebSpans(v.note)}</small></span>${ex ? `<span class="vex">${ex.h}</span>` : ""}</button></li>`; }).join("")}</ul>
+      <p class="note">Printed Bibles also carry accent marks above and below the words that show stress and how the text is chanted. Davar leaves them out for now.</p>`;
+    const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const showDetail = (i, scroll) => {
+      alphaSel = i; const a = AB[i];
+      view().querySelectorAll(".atile").forEach(t => t.classList.toggle("sel", +t.dataset.i === i));
+      const d = $("#adetail");
+      d.innerHTML = infoHTML(a.ch) + `<div class="row"><button id="aTrace" class="primary">Trace it</button><button id="aNext">Next letter</button></div>`;
+      bindAudio(d);
+      $("#aTrace").onclick = () => { traceIdx = Math.max(0, LETTERS.findIndex(l => l[0] === a.ch)); location.hash = "letters-trace"; };
+      $("#aNext").onclick = () => showDetail((i + 1) % AB.length, true);
+      if (scroll) d.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    };
+    view().querySelectorAll(".atile").forEach(t => t.onclick = () => { showDetail(+t.dataset.i, true); play(AB[+t.dataset.i].audio); });
+    bindAudio(view().querySelector(".vlist"));
+    showDetail(alphaSel, false);
+  }
+
   let traceIdx = 0;
   function trace() {
     const L = LETTERS[traceIdx];
@@ -413,7 +463,9 @@
       <div class="pad" id="pad"></div>
       <div class="feedback" id="fb" aria-live="polite"></div>
       <div class="row"><button id="clr">Clear</button><button id="chk" class="primary">Check</button></div>
-      <div class="row"><button id="prv" ${traceIdx === 0 ? "disabled" : ""}>Previous letter</button><button id="nxt">Next letter</button></div></div>`;
+      <div class="row"><button id="prv" ${traceIdx === 0 ? "disabled" : ""}>Previous letter</button><button id="nxt">Next letter</button></div></div>
+      <div class="card" id="info">${infoHTML(L[0])}</div>`;
+    bindAudio($("#info"));
     $("#prv").onclick = () => { traceIdx = Math.max(0, traceIdx - 1); trace(); };
     $("#nxt").onclick = () => { traceIdx = (traceIdx + 1) % LETTERS.length; trace(); };
     loadFont().then(() => {
@@ -436,10 +488,12 @@
     let L; do { L = LETTERS[Math.floor(Math.random() * LETTERS.length)]; } while (L === wLast);
     wLast = L;
     view().innerHTML = `<h2>Letters</h2>${segHTML("letters-write")}<p class="sub">Write the letter from memory between the lines, then tap Check. Well done: ${wRight} of ${wCount}</p>
-      <div class="card"><div class="letter-head"><span>Write <b>${L[1]}</b> · ${L[2]}</span></div>
+      <div class="card"><div class="letter-head"><span>Write <b>${L[1]}</b> · ${L[2]}</span>${abOf(L[0]) ? `<button class="say-name count" data-audio="${abOf(L[0]).audio}" aria-label="Hear the name">▶ Name</button>` : ""}</div>
       <div class="pad" id="pad"></div>
       <div class="feedback" id="fb" aria-live="polite"></div>
-      <div class="row"><button id="clr">Clear</button><button id="chk" class="primary">Check</button><button id="nxt">Next letter</button></div></div>`;
+      <div class="row"><button id="clr">Clear</button><button id="chk" class="primary">Check</button><button id="nxt">Next letter</button></div></div>
+      <div class="card" id="info" hidden></div>`;
+    bindAudio(view().querySelector(".letter-head"));
     $("#nxt").onclick = write;
     loadFont().then(() => {
       if (location.hash !== "#letters-write") return;
@@ -453,15 +507,16 @@
         if (!checked) { checked = true; wCount++; if (v.level === "good") wRight++; }
         writeFeedback(v, L[0], fb);
         pad.guide(L[0], css("--accent"), 0.35);
+        const info = $("#info"); if (info.hidden) { info.innerHTML = infoHTML(L[0]); info.hidden = !info.innerHTML; bindAudio(info); }
       };
     });
   }
 
   let lScore = 0, lCount = 0;
-  function letters() {
+  function nameDrill() {
     const L = LETTERS[Math.floor(Math.random() * LETTERS.length)];
     const opts = shuffle([L, ...shuffle(LETTERS.filter(x => x !== L)).slice(0, 3)]);
-    view().innerHTML = `<h2>Letters</h2>${segHTML("letters")}<p class="sub">Name the letter. Score: ${lScore}/${lCount}</p>
+    view().innerHTML = `<h2>Letters</h2>${segHTML("letters-name")}<p class="sub">Name the letter. Score: ${lScore}/${lCount}</p>
       <div class="card"><div class="prompt">${L[0]}</div>
       <div class="grid">${opts.map(o => `<button class="opt text" data-n="${o[1]}">${o[1]}<small style="color:var(--muted)">${o[2]}</small></button>`).join("")}</div>
       <div class="feedback" id="fb" aria-live="polite"></div></div>`;
@@ -471,7 +526,7 @@
       b.classList.add(ok ? "right" : "wrong");
       view().querySelector(`.opt[data-n="${L[1]}"]`).classList.add("right");
       const fb = $("#fb"); fb.className = "feedback " + (ok ? "good" : "bad"); fb.textContent = ok ? "Correct." : `That's ${L[1]}.`;
-      setTimeout(() => { if (location.hash === "#letters") letters(); }, ok ? 800 : 1600);
+      setTimeout(() => { if (location.hash === "#letters-name") nameDrill(); }, ok ? 800 : 1600);
     });
   }
 
@@ -503,7 +558,8 @@
     const m = h.match(/^lesson-(\d+)$/);
     if (m) lesson(+m[1]);
     else if (h === "review") review();
-    else if (h === "letters") letters();
+    else if (h === "letters") alphabet();
+    else if (h === "letters-name") nameDrill();
     else if (h === "letters-trace") trace();
     else if (h === "letters-write") write();
     else if (h === "speak") speak();
