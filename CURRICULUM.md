@@ -25,15 +25,15 @@ Pronunciation: placeholder modern voice (ElevenLabs); to be replaced with record
 | 9 | And, also, not | גַּם also, לֹא not (+ prefix וְ and) | Joining and negating |
 | 10 | A short story | — | Seven-line story using only known words |
 
-## Unit 3 — Things happen (Lessons 11–15)
+## Unit 3 — Things happen (Lessons 11–15) — built
 
 | # | Title | New words | New grammar |
 |---|-------|-----------|-------------|
-| 11 | He walked | הָלַךְ walked, יָשַׁב sat, אָכַל ate, רָאָה saw | Past tense, he-form |
-| 12 | He said | אָמַר said, קָרָא called, שָׁמַע heard | Quoting speech |
-| 13 | God | אֱלֹהִים God, שָׁמַיִם heavens, אוֹר light, חֹשֶׁךְ darkness | Plural form used for God |
-| 14 | Created and made | בָּרָא created, עָשָׂה made, הָיָה was, רֵאשִׁית beginning | Object marker אֵת |
-| 15 | Unit review | — | Story built from Lessons 11–14 |
+| 11 | He walked | הָלַךְ walked, יָשַׁב sat, אָכַל ate, רָאָה saw | Past tense, "he did it" form |
+| 12 | He said | אָמַר said, קָרָא called/read, שָׁמַע heard | Quoting speech |
+| 13 | God and the light | אֱלֹהִים God, שָׁמַיִם heavens, אוֹר light, חֹשֶׁךְ darkness | אֱלֹהִים with a singular verb |
+| 14 | Created and made | בָּרָא created, עָשָׂה made, הָיָה was, רֵאשִׁית beginning, אֵת | Object marker אֵת |
+| 15 | The dog and the bread | — | Seven-line story using Unit 3 verbs |
 
 ## Unit 4 — Reading Genesis 1 (Lessons 16–20)
 

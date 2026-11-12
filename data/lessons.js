@@ -134,12 +134,82 @@ window.DAVAR_LESSONS = [
       { id: "st-6", img: "img/st-6.webp", kind: "sentence", h: "הַצִּפּוֹר עַל הַבַּיִת",             t: "hatsippor al habayit",           en: "The bird is on the house.",                pic: "🐦🏠", audio: "st-6" },
       { id: "st-7", img: "img/st-7.webp", kind: "sentence", h: "הַנָּחָשׁ לֹא בַּבַּיִת",             t: "hanachash lo babayit",           en: "The serpent is not in the house.",         pic: "🐍🚫🏠", audio: "st-7" }
     ]
+  },
+  {
+    id: 11, unit: 3, title: "He walked", heb: "הָלַךְ",
+    tip: "These words tell what someone did. Each one is the “he did it” form: הָלַךְ is “he walked.” Hebrew dictionaries list verbs in this same form.",
+    items: [
+      { id: "halakh", img: "img/halakh.webp", h: "הָלַךְ", t: "halakh", en: "he walked, went", pic: "🚶", audio: "halakh" },
+      { id: "yashav", img: "img/yashav.webp", h: "יָשַׁב", t: "yashav", en: "he sat", pic: "🪑", audio: "yashav" },
+      { id: "akhal", img: "img/akhal.webp",  h: "אָכַל", t: "akhal",  en: "he ate", pic: "🍞", audio: "akhal" },
+      { id: "raah", img: "img/raah.webp",   h: "רָאָה", t: "ra'ah",  en: "he saw", pic: "👀", audio: "raah" },
+      { id: "s3-ish-halakh", img: "img/s3-ish-halakh.webp",   kind: "sentence", h: "הָאִישׁ הָלַךְ",            t: "haish halakh",              en: "The man walked.",             pic: "🧔🚶", audio: "s3-ish-halakh" },
+      { id: "s3-yeled-yashav", img: "img/s3-yeled-yashav.webp", kind: "sentence", h: "הַיֶּלֶד יָשַׁב תַּחַת הָעֵץ", t: "hayeled yashav tachat haets", en: "The boy sat under the tree.", pic: "👦🌳", audio: "s3-yeled-yashav" },
+      { id: "s3-kelev-akhal", img: "img/s3-kelev-akhal.webp",  kind: "sentence", h: "הַכֶּלֶב אָכַל לֶחֶם",        t: "hakelev akhal lechem",      en: "The dog ate bread.",          pic: "🐕🍞", audio: "s3-kelev-akhal" },
+      { id: "s3-ish-raah", img: "img/s3-ish-raah.webp",     kind: "sentence", h: "הָאִישׁ רָאָה נָחָשׁ",        t: "haish ra'ah nachash",       en: "The man saw a serpent.",      pic: "🧔👀🐍", audio: "s3-ish-raah" }
+    ]
+  },
+  {
+    id: 12, unit: 3, title: "He said", heb: "אָמַר",
+    tip: "In these lessons a colon starts what someone said: הָאִישׁ אָמַר: טוֹב, “The man said, ‘Good.’” קָרָא can mean “call” or “read.”",
+    items: [
+      { id: "amar", img: "img/amar.webp",  h: "אָמַר", t: "amar",  en: "he said", pic: "🗣️", audio: "amar" },
+      { id: "qara", img: "img/qara.webp",  h: "קָרָא", t: "qara",  en: "he called, read", pic: "📣", audio: "qara" },
+      { id: "shama", img: "img/shama.webp", h: "שָׁמַע", t: "shama", en: "he heard", pic: "👂", audio: "shama" },
+      { id: "s3-ish-amar-tov", img: "img/s3-ish-amar-tov.webp", kind: "sentence", h: "הָאִישׁ אָמַר: טוֹב",   t: "haish amar: tov",     en: "The man said, “Good.”",          pic: "🧔🗣️👍", audio: "s3-ish-amar-tov" },
+      { id: "s3-yeled-shama", img: "img/s3-yeled-shama.webp",  kind: "sentence", h: "הַיֶּלֶד שָׁמַע צִפּוֹר", t: "hayeled shama tsippor", en: "The boy heard a bird.",        pic: "👦👂🐦", audio: "s3-yeled-shama" },
+      { id: "s3-av-qara", img: "img/s3-av-qara.webp",      kind: "sentence", h: "הָאָב קָרָא לַיֶּלֶד",    t: "haav qara layeled",   en: "The father called to the boy.", pic: "👨📣👦", audio: "s3-av-qara" },
+      { id: "s3-hu-amar-lo", img: "img/s3-hu-amar-lo.webp",   kind: "sentence", h: "הוּא אָמַר: לֹא",       t: "hu amar: lo",         en: "He said, “No.”",                pic: "🧔🚫", audio: "s3-hu-amar-lo" }
+    ]
+  },
+  {
+    id: 13, unit: 3, title: "God and the light", heb: "אֱלֹהִים",
+    tip: "אֱלֹהִים ends in ־ִים like a plural, but when it means the God of Israel it takes a “he” verb: אֱלֹהִים אָמַר, “God said.” Davar doesn't picture God. The light from above is a reminder, not a portrait.",
+    items: [
+      { id: "elohim", img: "img/elohim.webp",   h: "אֱלֹהִים", t: "elohim",   en: "God", pic: "☁️", audio: "w-elohim", quiz: false },
+      { id: "shamayim", img: "img/shamayim.webp", h: "שָׁמַיִם", t: "shamayim", en: "heavens, sky", pic: "☁️🌤️", audio: "shamayim" },
+      { id: "or", img: "img/or.webp",       h: "אוֹר",    t: "or",       en: "light", pic: "🪔", audio: "or" },
+      { id: "choshekh", img: "img/choshekh.webp", h: "חֹשֶׁךְ",  t: "choshekh", en: "darkness", pic: "🌑", audio: "choshekh" },
+      { id: "s3-or-tov", img: "img/s3-or-tov.webp",             kind: "sentence", h: "הָאוֹר טוֹב",        t: "haor tov",            en: "The light is good.",           pic: "🪔👍", audio: "s3-or-tov" },
+      { id: "s3-shemesh-bashamayim", img: "img/s3-shemesh-bashamayim.webp", kind: "sentence", h: "הַשֶּׁמֶשׁ בַּשָּׁמַיִם", t: "hashemesh bashamayim", en: "The sun is in the sky.",       pic: "☀️☁️", audio: "s3-shemesh-bashamayim" },
+      { id: "s3-yareach-bachoshekh", img: "img/s3-yareach-bachoshekh.webp", kind: "sentence", h: "הַיָּרֵחַ בַּחֹשֶׁךְ",   t: "hayareach bachoshekh", en: "The moon is in the darkness.", pic: "🌙🌑", audio: "s3-yareach-bachoshekh" },
+      { id: "s3-elohim-amar", img: "img/elohim.webp",        kind: "sentence", h: "אֱלֹהִים אָמַר",      t: "elohim amar",         en: "God said.",                    pic: "☁️🗣️", audio: "s3-elohim-amar" }
+    ]
+  },
+  {
+    id: 14, unit: 3, title: "Created and made", heb: "בָּרָא",
+    tip: "אֵת has no English word. It stands in front of a definite object, the thing the action happens to: רָאָה אֶת הַסּוּס, “he saw the horse.” You'll meet it twice in Genesis 1:1.",
+    items: [
+      { id: "bara", img: "img/bara.webp",   h: "בָּרָא",   t: "bara",   en: "he created", pic: "🌍✨", audio: "w-bara", quiz: false },
+      { id: "asah", img: "img/asah.webp",   h: "עָשָׂה",   t: "asah",   en: "he made, did", pic: "🏺", audio: "asah" },
+      { id: "hayah", img: "img/s3-yeled-hayah-babayit.webp",  h: "הָיָה",    t: "hayah",  en: "he was, it was", pic: "⏳", audio: "hayah", quiz: false },
+      { id: "reshit", img: "img/reshit.webp", h: "רֵאשִׁית", t: "reshit", en: "beginning", pic: "🌅", audio: "reshit", quiz: false },
+      { id: "et", img: "img/s3-yeled-raah-et-sus.webp",     h: "אֵת",     t: "et",     en: "(marks the object)", pic: "🎯", audio: "w-et", quiz: false },
+      { id: "s3-ish-asah-lechem", img: "img/s3-ish-asah-lechem.webp",     kind: "sentence", h: "הָאִישׁ עָשָׂה לֶחֶם",       t: "haish asah lechem",        en: "The man made bread.",         pic: "🧔🍞", audio: "s3-ish-asah-lechem" },
+      { id: "s3-yeled-raah-et-sus", img: "img/s3-yeled-raah-et-sus.webp",   kind: "sentence", h: "הַיֶּלֶד רָאָה אֶת הַסּוּס",   t: "hayeled ra'ah et hasus",   en: "The boy saw the horse.",      pic: "👦👀🐎", audio: "s3-yeled-raah-et-sus" },
+      { id: "s3-yeled-hayah-babayit", img: "img/s3-yeled-hayah-babayit.webp", kind: "sentence", h: "הַיֶּלֶד הָיָה בַּבַּיִת",    t: "hayeled hayah babayit",    en: "The boy was in the house.",   pic: "👦🏠", audio: "s3-yeled-hayah-babayit" },
+      { id: "s3-elohim-bara", img: "img/bara.webp",         kind: "sentence", h: "אֱלֹהִים בָּרָא אֶת הָאָרֶץ", t: "elohim bara et haarets",   en: "God created the earth.",      pic: "🌍✨☁️", audio: "s3-elohim-bara" }
+    ]
+  },
+  {
+    id: 15, unit: 3, title: "The dog and the bread", heb: "הַכֶּלֶב וְהַלֶּחֶם",
+    tip: "A short story using only words you know. Read each line and see if you understand it before you tap Show meaning.",
+    items: [
+      { id: "st3-1", img: "img/st3-1.webp", kind: "sentence", h: "הָאִישׁ יָשַׁב בַּבַּיִת",            t: "haish yashav babayit",            en: "The man sat in the house.",        pic: "🧔🏠", audio: "st3-1" },
+      { id: "st3-2", img: "img/st3-2.webp", kind: "sentence", h: "הוּא שָׁמַע כֶּלֶב",                t: "hu shama kelev",                  en: "He heard a dog.",                  pic: "👂🐕", audio: "st3-2" },
+      { id: "st3-3", img: "img/st3-3.webp", kind: "sentence", h: "הוּא רָאָה אֶת הַכֶּלֶב תַּחַת הָעֵץ", t: "hu ra'ah et hakelev tachat haets", en: "He saw the dog under the tree.",   pic: "👀🐕🌳", audio: "st3-3" },
+      { id: "st3-4", img: "img/st3-4.webp", kind: "sentence", h: "הַכֶּלֶב אָכַל אֶת הַלֶּחֶם",         t: "hakelev akhal et halechem",       en: "The dog ate the bread.",           pic: "🐕🍞😋", audio: "st3-4" },
+      { id: "st3-5", img: "img/st3-5.webp", kind: "sentence", h: "הָאִישׁ אָמַר: לֹא טוֹב",           t: "haish amar: lo tov",              en: "The man said, “Not good!”",        pic: "🧔👎", audio: "st3-5" },
+      { id: "st3-6", img: "img/st3-6.webp", kind: "sentence", h: "הַיֶּלֶד עָשָׂה לֶחֶם",              t: "hayeled asah lechem",             en: "The boy made bread.",              pic: "👦🍞", audio: "st3-6" },
+      { id: "st3-7", img: "img/st3-7.webp", kind: "sentence", h: "וְהַלֶּחֶם הָיָה טוֹב",              t: "vehalechem hayah tov",            en: "And the bread was good.",          pic: "🍞👍", audio: "st3-7" }
+    ]
   }
 ];
 
 window.DAVAR_UNITS = [
   { id: 1, title: "Things you can point at" },
-  { id: 2, title: "Who and where" }
+  { id: 2, title: "Who and where" },
+  { id: 3, title: "Things happen" }
 ];
 
 window.DAVAR_LETTERS = [

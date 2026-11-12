@@ -12,6 +12,8 @@ ALIAS = {
     "zeh": "point", "zot": "point", "hu": "ish", "hi": "ishah",
     "ani": "s-ani-ish", "atah": "s-zeh-ish", "at": "s-zot-ishah",
     "s-hu-av": "av", "s-hi-em": "em", "gam": "s-gam-hi-yaldah",
+    "s3-elohim-amar": "elohim", "s3-elohim-bara": "bara",
+    "hayah": "s3-yeled-hayah-babayit", "et": "s3-yeled-raah-et-sus",
 }
 
 src = sys.argv[1]

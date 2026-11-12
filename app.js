@@ -91,6 +91,10 @@
   }
 
   /* ---------- helpers ---------- */
+  // Wrap each run of Hebrew (several words joined by spaces or a maqaf count as one run) so it
+  // keeps right-to-left word order inside English sentences.
+  const HEB_RUN = /[\u0590-\u05FF](?:[\u0590-\u05FF\s\u05BE]*[\u0590-\u05FF])?/g;
+  const hebPhrases = str => String(str).replace(HEB_RUN, m => `<span class="heb-inline" dir="rtl">${m}</span>`);
   const $ = s => document.querySelector(s);
   const view = () => $("#view");
   const shuffle = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
@@ -204,7 +208,7 @@
       const it = L.items[i];
       view().innerHTML = `<h2>Lesson ${L.id} · ${esc(L.title)}</h2><p class="sub">Look, listen, and say it out loud.</p>
         <div class="card">
-        ${i === 0 && L.tip ? `<div class="tip">${L.tip.replace(/([֐-׿]+)/g, '<span class="heb-inline">$1</span>')}</div>` : ""}
+        ${i === 0 && L.tip ? `<div class="tip">${hebPhrases(L.tip)}</div>` : ""}
         ${picHTML(it)}<div class="word">${it.h}</div><div class="translit">${esc(it.t)}</div>
         <div class="row"><button id="hear">▶ Hear it</button><button id="slow">🐢 Slower</button><button id="mean" class="ghost">Show meaning</button></div>
         <div id="meaning" class="translit" hidden>${esc(it.en)}</div>
@@ -410,7 +414,7 @@
   /* ---------- alphabet guide ---------- */
   const AB = window.DAVAR_ALEPHBET || [], VOW = window.DAVAR_VOWELS || [];
   const abOf = ch => AB.find(a => a.ch === ch);
-  const hebSpans = str => esc(str).replace(/([\u0590-\u05FF]+)/g, '<span class="heb-inline">$1</span>');
+  const hebSpans = str => hebPhrases(esc(str));
   const markLetter = (word, ch) => word.replace(new RegExp(ch + "[\\u0591-\\u05C7]*", "g"), m => `<mark>${m}</mark>`);
   function infoHTML(ch) {
     const a = abOf(ch); if (!a) return "";
@@ -541,7 +545,7 @@
       const w = R.words[k];
       if (w.audio) play(w.audio);
       view().querySelectorAll(".verse span").forEach(s => s.classList.toggle("sel", s.dataset.i == k));
-      $("#gl").innerHTML = `<div class="g-heb">${w.h}</div><div class="g-en">${esc(w.en)}</div><div class="g-note">${w.n.replace(/([֐-׿]+)/g, '<span class="heb-inline">$1</span>')}</div>`;
+      $("#gl").innerHTML = `<div class="g-heb">${w.h}</div><div class="g-en">${esc(w.en)}</div><div class="g-note">${hebPhrases(w.n)}</div>`;
     };
     view().querySelectorAll(".verse span").forEach(s => { s.onclick = () => show(s.dataset.i); s.onkeydown = e => { if (e.key === "Enter") show(s.dataset.i); }; });
     $("#hear").onclick = () => play(R.audio);
