@@ -5,7 +5,7 @@ Method: picture + audio first, meaning from context, English only behind a "Show
 Each lesson: 4–6 new items, a listen-and-tap quiz, then the items join spaced review.
 Pronunciation: placeholder modern voice (ElevenLabs); to be replaced with recordings later.
 
-## Unit 1 — Things you can point at (Lessons 1–5)
+## Unit 1 — Things you can point at (Lessons 1–5) — built
 
 | # | Title | New words | New grammar |
 |---|-------|-----------|-------------|
@@ -15,15 +15,15 @@ Pronunciation: placeholder modern voice (ElevenLabs); to be replaced with record
 | 4 | This is… | בַּיִת house, לֶחֶם bread, זֶה this (m), זֹאת this (f) | "This is a ___" with no verb "is" |
 | 5 | The good horse | טוֹב good, רַע bad, גָּדוֹל big, קָטֹן small | הַ "the"; "The ___ is good" |
 
-## Unit 2 — Who and where (Lessons 6–10)
+## Unit 2 — Who and where (Lessons 6–10) — built
 
 | # | Title | New words | New grammar |
 |---|-------|-----------|-------------|
-| 6 | Many | אֲנָשִׁים men, נָשִׁים women, סוּסִים horses, עֵצִים trees | Plurals -ִים / -וֹת |
-| 7 | I and you | אֲנִי I, אַתָּה you (m), אַתְּ you (f), הוּא he, הִיא she | Pronouns as subjects |
-| 8 | In the house | בְּ in, עַל on, תַּחַת under, לְ to/for | Prepositions joined to words |
-| 9 | And | וְ and, גַּם also, לֹא not | Joining and negating |
-| 10 | Unit review | — | Story: a man, a woman, and a horse |
+| 6 | Many | סוּסִים horses, כְּלָבִים dogs, עֵצִים trees, כּוֹכָבִים stars, יְלָדִים boys, יְלָדוֹת girls, אֲנָשִׁים men, נָשִׁים women | Plurals ־ִים / ־וֹת, irregular plurals |
+| 7 | I and you | אֲנִי I, אַתָּה you (m), אַתְּ you (f), הוּא he, הִיא she | Pronoun sentences with no verb "to be" |
+| 8 | In the house | עַל on, תַּחַת under (+ prefixes בְּ in, לְ to/for) | Prefixes; בְּ + הַ = בַּ |
+| 9 | And, also, not | גַּם also, לֹא not (+ prefix וְ and) | Joining and negating |
+| 10 | A short story | — | Seven-line story using only known words |
 
 ## Unit 3 — Things happen (Lessons 11–15)
 

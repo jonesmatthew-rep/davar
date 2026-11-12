@@ -1,6 +1,7 @@
 (function () {
   "use strict";
   const LESSONS = window.DAVAR_LESSONS, LETTERS = window.DAVAR_LETTERS, READINGS = window.DAVAR_READINGS;
+  const UNITS = window.DAVAR_UNITS || [{ id: 1, title: "Lessons" }];
   const ITEMS = {}; LESSONS.forEach(l => l.items.forEach(it => { it.lesson = l.id; ITEMS[it.id] = it; }));
   const DAY = 86400000, INTERVALS = [0, 1, 2, 4, 8, 16, 32]; // days per review box
 
@@ -94,7 +95,9 @@
   const view = () => $("#view");
   const shuffle = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(x => x[1]);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const picHTML = it => `<div class="pic ${it.size || ""}" aria-hidden="true">${it.pic}</div>`;
+  const seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter() : null;
+  const glyphs = str => seg ? [...seg.segment(str)].length : Math.ceil([...str].length / 2);
+  const picHTML = it => `<div class="pic ${it.size || ""} ${glyphs(it.pic) >= 3 ? "multi" : ""}" aria-hidden="true">${it.pic}</div>`;
   const isDone = id => progress.done.includes(id);
   const unlocked = id => id === 1 || isDone(id - 1) || isDone(id);
   const quizzable = it => it.quiz !== false;
@@ -176,14 +179,18 @@
       ${due.length ? `<div class="review-banner"><p><b>${due.length}</b> ${due.length === 1 ? "word is" : "words are"} ready for review.</p><a href="#review"><button class="primary">Review</button></a></div>` : ""}
       ${nextLesson ? `<div class="card"><p class="section-label">Up next</p><div class="word">${nextLesson.heb}</div><h2>Lesson ${nextLesson.id} · ${esc(nextLesson.title)}</h2><a href="#lesson-${nextLesson.id}"><button class="primary">Start lesson</button></a></div>`
         : `<div class="card"><h2>All lessons done</h2><p class="sub">More lessons are on the way. Keep your words fresh with review.</p></div>`}
-      <p class="section-label">Unit 1 · Things you can point at</p>
-      <ul class="lessons">${LESSONS.map(l => {
+      ${UNITS.map(u => {
+        const ls = LESSONS.filter(l => (l.unit || 1) === u.id);
+        if (!ls.length) return "";
+        return `<p class="section-label">Unit ${u.id} · ${esc(u.title)}</p>
+      <ul class="lessons">${ls.map(l => {
         const open = unlocked(l.id), done = isDone(l.id);
         return `<li><button class="lesson ${done ? "done" : ""}" data-id="${l.id}" ${open ? "" : "disabled"}>
           <span class="num">${done ? "✓" : l.id}</span>
           <span class="meta"><b>${esc(l.title)}</b><span>${l.heb}</span></span>
           <span class="state">${done ? "Done" : open ? "Start" : "Locked"}</span></button></li>`;
-      }).join("")}</ul></div>`;
+      }).join("")}</ul>`;
+      }).join("")}</div>`;
     view().querySelectorAll(".lesson").forEach(b => b.onclick = () => { location.hash = "lesson-" + b.dataset.id; });
   }
 
@@ -470,13 +477,14 @@
 
   function read() {
     const R = READINGS[0];
-    view().innerHTML = `<h2>Read Scripture</h2><p class="sub">Tap any word for its meaning. Hebrew reads right to left.</p>
+    view().innerHTML = `<h2>Read Scripture</h2><p class="sub">Tap any word to hear it and see its meaning. Hebrew reads right to left.</p>
       <div class="card"><div class="ref">${R.ref}</div>
       <div class="verse">${R.words.map((w, k) => `<span tabindex="0" role="button" data-i="${k}">${w.h}</span>`).join(" ")}</div>
       <div class="gloss" id="gl" aria-live="polite"><span class="g-note">Start with the first word on the right.</span></div>
       <div class="row"><button id="hear">▶ Hear the verse</button><button id="slow">🐢 Slower</button></div></div>`;
     const show = k => {
       const w = R.words[k];
+      if (w.audio) play(w.audio);
       view().querySelectorAll(".verse span").forEach(s => s.classList.toggle("sel", s.dataset.i == k));
       $("#gl").innerHTML = `<div class="g-heb">${w.h}</div><div class="g-en">${esc(w.en)}</div><div class="g-note">${w.n.replace(/([֐-׿]+)/g, '<span class="heb-inline">$1</span>')}</div>`;
     };

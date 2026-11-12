@@ -64,7 +64,82 @@ window.DAVAR_LESSONS = [
       { id: "s-halechem-tov",  kind: "sentence", h: "הַלֶּחֶם טוֹב",  t: "halechem tov",  en: "The bread is good.",   pic: "🍞👍", audio: "s-halechem-tov" },
       { id: "s-hanachash-ra",  kind: "sentence", h: "הַנָּחָשׁ רַע",   t: "hanachash ra",  en: "The serpent is bad.",  pic: "🐍👎", audio: "s-hanachash-ra" }
     ]
+  },
+  {
+    id: 6, unit: 2, title: "Many", heb: "רַבִּים",
+    tip: "Adding ־ִים to a word usually means “many.” Some words change shape: אִישׁ becomes אֲנָשִׁים. Many feminine words end in ־וֹת.",
+    items: [
+      { id: "susim",    h: "סוּסִים",   t: "susim",    en: "horses",   pic: "🐎🐎🐎", audio: "susim" },
+      { id: "kelavim",  h: "כְּלָבִים",  t: "kelavim",  en: "dogs",     pic: "🐕🐕🐕", audio: "kelavim" },
+      { id: "etsim",    h: "עֵצִים",    t: "etsim",    en: "trees",    pic: "🌳🌳🌳", audio: "etsim" },
+      { id: "kochavim", h: "כּוֹכָבִים", t: "kochavim", en: "stars",    pic: "⭐⭐⭐", audio: "kochavim" },
+      { id: "yeladim",  h: "יְלָדִים",   t: "yeladim",  en: "boys, children", pic: "👦👦👦", audio: "yeladim" },
+      { id: "yeladot",  h: "יְלָדוֹת",   t: "yeladot",  en: "girls",    pic: "👧👧👧", audio: "yeladot" },
+      { id: "anashim",  h: "אֲנָשִׁים",  t: "anashim",  en: "men",      pic: "🧔🧔🧔", audio: "anashim" },
+      { id: "nashim",   h: "נָשִׁים",    t: "nashim",   en: "women",    pic: "👩👩👩", audio: "nashim" }
+    ]
+  },
+  {
+    id: 7, unit: 2, title: "I and you", heb: "אֲנִי וְאַתָּה",
+    tip: "Again, no word for “am” or “are”: אֲנִי אִישׁ is “I am a man.” Hebrew has two words for “you”: אַתָּה for a man, אַתְּ for a woman.",
+    items: [
+      { id: "ani",  h: "אֲנִי", t: "ani",  en: "I",            pic: "🙋", audio: "ani", quiz: false },
+      { id: "atah", h: "אַתָּה", t: "atah", en: "you (a man)",  pic: "👉🧔", audio: "atah", quiz: false },
+      { id: "at",   h: "אַתְּ",  t: "at",   en: "you (a woman)", pic: "👉👩", audio: "at", quiz: false },
+      { id: "hu",   h: "הוּא",  t: "hu",   en: "he, it",       pic: "🧔", audio: "hu", quiz: false },
+      { id: "hi",   h: "הִיא",  t: "hi",   en: "she, it",      pic: "👩", audio: "hi", quiz: false },
+      { id: "s-ani-ish",    kind: "sentence", h: "אֲנִי אִישׁ",   t: "ani ish",    en: "I am a man.",      pic: "🙋‍♂️", audio: "s-ani-ish" },
+      { id: "s-ani-ishah",  kind: "sentence", h: "אֲנִי אִשָּׁה",  t: "ani ishah",  en: "I am a woman.",    pic: "🙋‍♀️", audio: "s-ani-ishah" },
+      { id: "s-atah-yeled", kind: "sentence", h: "אַתָּה יֶלֶד",  t: "atah yeled", en: "You are a boy.",   pic: "👉👦", audio: "s-atah-yeled" },
+      { id: "s-at-yaldah",  kind: "sentence", h: "אַתְּ יַלְדָּה", t: "at yaldah",  en: "You are a girl.",  pic: "👉👧", audio: "s-at-yaldah" },
+      { id: "s-hu-av",      kind: "sentence", h: "הוּא אָב",     t: "hu av",      en: "He is a father.",  pic: "👨‍👧", audio: "s-hu-av" },
+      { id: "s-hi-em",      kind: "sentence", h: "הִיא אֵם",     t: "hi em",      en: "She is a mother.", pic: "👩‍👦", audio: "s-hi-em" }
+    ]
+  },
+  {
+    id: 8, unit: 2, title: "In the house", heb: "בַּבַּיִת",
+    tip: "Some little words join onto the front of the next word: בְּ “in” and לְ “to, for.” With “the,” בְּ + הַ becomes בַּ, so בַּבַּיִת is “in the house.”",
+    items: [
+      { id: "al",    h: "עַל",  t: "al",    en: "on, upon", pic: "⬆️", audio: "al", quiz: false },
+      { id: "tachat", h: "תַּחַת", t: "tachat", en: "under",  pic: "⬇️", audio: "tachat", quiz: false },
+      { id: "s-hadag-bamayim",  kind: "sentence", h: "הַדָּג בַּמַּיִם",      t: "hadag bamayim",      en: "The fish is in the water.",   pic: "🐟💧", audio: "s-hadag-bamayim" },
+      { id: "s-haish-babayit",  kind: "sentence", h: "הָאִישׁ בַּבַּיִת",     t: "haish babayit",      en: "The man is in the house.",    pic: "🧔🏠", audio: "s-haish-babayit" },
+      { id: "s-tsippor-al-ets", kind: "sentence", h: "הַצִּפּוֹר עַל הָעֵץ",   t: "hatsippor al haets", en: "The bird is on the tree.",    pic: "🐦🌳", audio: "s-tsippor-al-ets" },
+      { id: "s-kelev-tachat-ets", kind: "sentence", h: "הַכֶּלֶב תַּחַת הָעֵץ", t: "hakelev tachat haets", en: "The dog is under the tree.", pic: "🐕🌳", audio: "s-kelev-tachat-ets" },
+      { id: "s-lechem-laish",   kind: "sentence", h: "הַלֶּחֶם לָאִישׁ",      t: "halechem laish",     en: "The bread is for the man.",   pic: "🍞🧔", audio: "s-lechem-laish" }
+    ]
+  },
+  {
+    id: 9, unit: 2, title: "And, also, not", heb: "וְ · גַּם · לֹא",
+    tip: "“And” is just וְ joined to the front of the next word: אִישׁ וְאִשָּׁה, “a man and a woman.” לֹא before a word means “not.”",
+    items: [
+      { id: "gam", h: "גַּם", t: "gam", en: "also, too", pic: "➕", audio: "gam", quiz: false },
+      { id: "lo",  h: "לֹא",  t: "lo",  en: "not, no",   pic: "🚫", audio: "lo", quiz: false },
+      { id: "s-ish-veishah",   kind: "sentence", h: "אִישׁ וְאִשָּׁה",      t: "ish veishah",      en: "A man and a woman.",       pic: "🧔👩", audio: "s-ish-veishah" },
+      { id: "s-sus-vegamal",   kind: "sentence", h: "סוּס וְגָמָל",       t: "sus vegamal",      en: "A horse and a camel.",     pic: "🐎🐪", audio: "s-sus-vegamal" },
+      { id: "s-zeh-lo-kelev",  kind: "sentence", h: "זֶה לֹא כֶּלֶב",      t: "zeh lo kelev",     en: "This is not a dog.",       pic: "👉🐈", audio: "s-zeh-lo-kelev" },
+      { id: "s-lechem-lo-tov", kind: "sentence", h: "הַלֶּחֶם לֹא טוֹב",   t: "halechem lo tov",  en: "The bread is not good.",   pic: "🍞🚫", audio: "s-lechem-lo-tov" },
+      { id: "s-gam-hi-yaldah", kind: "sentence", h: "גַּם הִיא יַלְדָּה",   t: "gam hi yaldah",    en: "She is a girl too.",       pic: "👧👧", audio: "s-gam-hi-yaldah" }
+    ]
+  },
+  {
+    id: 10, unit: 2, title: "A short story", heb: "סִפּוּר",
+    tip: "Every word in this story is one you already know. Read each line, listen, and see if you understand it before you tap Show meaning.",
+    items: [
+      { id: "st-1", kind: "sentence", h: "זֶה אִישׁ וְזֹאת אִשָּׁה",          t: "zeh ish vezot ishah",            en: "This is a man and this is a woman.",       pic: "👉🧔👩", audio: "st-1" },
+      { id: "st-2", kind: "sentence", h: "הָאִישׁ אָב וְהָאִשָּׁה אֵם",        t: "haish av vehaishah em",          en: "The man is a father and the woman is a mother.", pic: "👨‍👩‍👧", audio: "st-2" },
+      { id: "st-3", kind: "sentence", h: "הַיֶּלֶד וְהַיַּלְדָּה בַּבַּיִת",      t: "hayeled vehayaldah babayit",     en: "The boy and the girl are in the house.",   pic: "👦👧🏠", audio: "st-3" },
+      { id: "st-4", kind: "sentence", h: "הַסּוּס תַּחַת הָעֵץ",              t: "hasus tachat haets",             en: "The horse is under the tree.",             pic: "🐎🌳", audio: "st-4" },
+      { id: "st-5", kind: "sentence", h: "הַסּוּס גָּדוֹל וְהַכֶּלֶב קָטֹן",     t: "hasus gadol vehakelev katon",    en: "The horse is big and the dog is small.",   pic: "🐎🐕", audio: "st-5" },
+      { id: "st-6", kind: "sentence", h: "הַצִּפּוֹר עַל הַבַּיִת",             t: "hatsippor al habayit",           en: "The bird is on the house.",                pic: "🐦🏠", audio: "st-6" },
+      { id: "st-7", kind: "sentence", h: "הַנָּחָשׁ לֹא בַּבַּיִת",             t: "hanachash lo babayit",           en: "The serpent is not in the house.",         pic: "🐍🚫🏠", audio: "st-7" }
+    ]
   }
+];
+
+window.DAVAR_UNITS = [
+  { id: 1, title: "Things you can point at" },
+  { id: 2, title: "Who and where" }
 ];
 
 window.DAVAR_LETTERS = [
@@ -79,12 +154,12 @@ window.DAVAR_LETTERS = [
 
 window.DAVAR_READINGS = [
   { id: "gen1-1", ref: "Genesis 1:1", audio: "gen1-1", words: [
-    { h: "בְּרֵאשִׁית", en: "In the beginning", n: "בְּ (in) + רֵאשִׁית (beginning)" },
-    { h: "בָּרָא", en: "he created", n: "Verb, completed action" },
-    { h: "אֱלֹהִים", en: "God", n: "Plural form, used with a singular verb" },
-    { h: "אֵת", en: "(object marker)", n: "Marks the definite direct object; not translated" },
-    { h: "הַשָּׁמַיִם", en: "the heavens", n: "הַ (the) + שָׁמַיִם (heavens)" },
-    { h: "וְאֵת", en: "and (object marker)", n: "וְ (and) + אֵת" },
-    { h: "הָאָרֶץ", en: "the earth", n: "הָ (the) + אֶרֶץ (earth)" }
+    { h: "בְּרֵאשִׁית", en: "In the beginning", n: "בְּ (in) + רֵאשִׁית (beginning)", audio: "w-bereshit" },
+    { h: "בָּרָא", en: "he created", n: "Verb, completed action", audio: "w-bara" },
+    { h: "אֱלֹהִים", en: "God", n: "Plural form, used with a singular verb", audio: "w-elohim" },
+    { h: "אֵת", en: "(object marker)", n: "Marks the definite direct object; not translated", audio: "w-et" },
+    { h: "הַשָּׁמַיִם", en: "the heavens", n: "הַ (the) + שָׁמַיִם (heavens)", audio: "w-hashamayim" },
+    { h: "וְאֵת", en: "and (object marker)", n: "וְ (and) + אֵת", audio: "w-veet" },
+    { h: "הָאָרֶץ", en: "the earth", n: "הָ (the) + אֶרֶץ (earth)", audio: "w-haarets" }
   ]}
 ];
