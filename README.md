@@ -1,7 +1,7 @@
 # Davar Hebrew
 
 A free, installable web app (PWA) for learning to read the Hebrew Bible:
-picture lessons with audio, listen-and-tap practice, spaced review, a speaking coach,
+picture lessons with audio, listen-and-tap practice, spaced review, a speaking coach, an AI tutor you can talk with,
 an alphabet guide (every letter and vowel mark, with audio), letter naming, tracing, and writing practice, and Scripture reading with tap-to-gloss.
 No accounts or server; progress stays on each device.
 
@@ -13,6 +13,7 @@ No accounts or server; progress stays on each device.
 - `img/` — lesson illustrations (WebP, 512px), one per word or scene
 - `audio/` — one `.mp3` per word or sentence, named to match each item's `audio` field
 - `sw.js` — offline support (generated; see below)
+- `worker/` — the AI tutor relay (Cloudflare Worker); setup steps in `worker/README.md`
 - `manifest.webmanifest`, `icons/` — install-to-home-screen setup
 - `CURRICULUM.md` — the plan for lessons 1–20
 
@@ -35,6 +36,8 @@ Any static host works. Two good options:
 - **GitHub Pages**: push this folder to a repository and turn on Pages in its settings.
 
 ## Notes
+
+- The AI tutor uses Google Gemini through the relay in `worker/`. Replies can be read aloud with the phone's built-in voices.
 
 - The speaking coach uses the browser's built-in speech recognition (Chrome sends audio to Google,
   Safari to Apple). It needs an internet connection and a secure page (https or localhost).

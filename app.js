@@ -213,6 +213,7 @@
         <div class="row"><button id="hear">▶ Hear it</button><button id="slow">🐢 Slower</button><button id="mean" class="ghost">Show meaning</button></div>
         <div id="meaning" class="translit" hidden>${esc(it.en)}</div>
         <div class="say" id="sayBox"></div>
+        <button class="ask-link" id="askBtn">💬 Ask the tutor about this</button>
         <div class="dots">${L.items.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>
         <div class="row"><button id="back" ${i === 0 ? "disabled" : ""}>Back</button><button id="next" class="primary">${i === L.items.length - 1 ? "Practice" : "Next"}</button></div></div>`;
       play(it.audio);
@@ -220,6 +221,9 @@
       $("#slow").onclick = () => play(it.audio, true);
       $("#mean").onclick = () => { $("#meaning").hidden = !$("#meaning").hidden; };
       sayBox(it, $("#sayBox"));
+      $("#askBtn").onclick = () => askAbout(`Lesson ${L.id}: ${it.h}`, it.kind === "sentence"
+        ? `Can you walk me through the sentence ${it.h} word by word?`
+        : `Can you tell me more about the word ${it.h} (${it.t})?`);
       $("#back").onclick = () => { i--; step(); };
       $("#next").onclick = () => { if (i === L.items.length - 1) practice(); else { i++; step(); } };
     }
@@ -448,7 +452,8 @@
       alphaSel = i; const a = AB[i];
       view().querySelectorAll(".atile").forEach(t => t.classList.toggle("sel", +t.dataset.i === i));
       const d = $("#adetail");
-      d.innerHTML = infoHTML(a.ch) + `<div class="row"><button id="aTrace" class="primary">Trace it</button><button id="aNext">Next letter</button></div>`;
+      d.innerHTML = infoHTML(a.ch) + `<div class="row"><button id="aTrace" class="primary">Trace it</button><button id="aNext">Next letter</button></div><button class="ask-link" id="aAsk">💬 Ask the tutor about ${esc(a.name)}</button>`;
+      $("#aAsk").onclick = () => askAbout(`the alphabet guide: ${a.name} (${a.ch})`, `Can you explain the letter ${a.name} (${a.ch}) a little more?`);
       bindAudio(d);
       $("#aTrace").onclick = () => { traceIdx = Math.max(0, LETTERS.findIndex(l => l[0] === a.ch)); location.hash = "letters-trace"; };
       $("#aNext").onclick = () => showDetail((i + 1) % AB.length, true);
@@ -469,6 +474,8 @@
       <div class="row"><button id="clr">Clear</button><button id="chk" class="primary">Check</button></div>
       <div class="row"><button id="prv" ${traceIdx === 0 ? "disabled" : ""}>Previous letter</button><button id="nxt">Next letter</button></div></div>
       <div class="card" id="info">${infoHTML(L[0])}</div>`;
+    $("#info").insertAdjacentHTML("beforeend", `<button class="ask-link" id="tAsk">💬 Ask the tutor about ${esc(L[1])}</button>`);
+    $("#tAsk").onclick = () => askAbout(`tracing practice: ${L[1]} (${L[0]})`, `I'm practicing writing ${L[1]} (${L[0]}). Any tips, and what is it used for?`);
     bindAudio($("#info"));
     $("#prv").onclick = () => { traceIdx = Math.max(0, traceIdx - 1); trace(); };
     $("#nxt").onclick = () => { traceIdx = (traceIdx + 1) % LETTERS.length; trace(); };
@@ -545,17 +552,136 @@
       const w = R.words[k];
       if (w.audio) play(w.audio);
       view().querySelectorAll(".verse span").forEach(s => s.classList.toggle("sel", s.dataset.i == k));
-      $("#gl").innerHTML = `<div class="g-heb">${w.h}</div><div class="g-en">${esc(w.en)}</div><div class="g-note">${hebPhrases(w.n)}</div>`;
+      $("#gl").innerHTML = `<div class="g-heb">${w.h}</div><div class="g-en">${esc(w.en)}</div><div class="g-note">${hebPhrases(w.n)}</div><button class="ask-link" id="gAsk">💬 Ask the tutor about this word</button>`;
+      $("#gAsk").onclick = () => askAbout(`${R.ref}, the word ${w.h}`, `In ${R.ref}, can you explain the word ${w.h} (${w.en}) more?`);
     };
     view().querySelectorAll(".verse span").forEach(s => { s.onclick = () => show(s.dataset.i); s.onkeydown = e => { if (e.key === "Enter") show(s.dataset.i); }; });
     $("#hear").onclick = () => play(R.audio);
     $("#slow").onclick = () => play(R.audio, true);
   }
 
+  /* ---------- AI tutor ---------- */
+  const TUTOR_URL = window.DAVAR_TUTOR_URL || "https://tutor.davarhebrew.app/chat";
+  let chat = store.get("chat", []);                 // [{role: "user"|"model", text}]
+  let tutorTopic = null, tutorDraft = "", tutorBusy = false;
+  let speakReplies = store.get("speakReplies", false);
+  const saveChat = () => store.set("chat", chat.slice(-40));
+  function askAbout(topic, question) { tutorTopic = topic; tutorDraft = question; location.hash = "tutor"; }
+  const learnedWords = () => Object.keys(cards).map(id => ITEMS[id]).filter(i => i && i.kind !== "sentence").map(i => `${i.h} (${i.en})`).slice(0, 120);
+
+  // Light formatting for replies: **bold**, *italic*, line breaks and "- " lists. Text is escaped first.
+  const inlineFmt = str => hebPhrases(str.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^*])\*(?!\s)([^*]+?)\*/g, "$1<i>$2</i>"));
+  function fmt(text) {
+    let html = "", inList = false;
+    esc(text).split(/\n/).forEach(line => {
+      const m = line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)/);
+      if (m) { if (!inList) { html += "<ul>"; inList = true; } html += `<li>${inlineFmt(m[1])}</li>`; return; }
+      if (inList) { html += "</ul>"; inList = false; }
+      if (line.trim()) html += `<p>${inlineFmt(line)}</p>`;
+    });
+    return html + (inList ? "</ul>" : "");
+  }
+
+  // Read a reply aloud with the phone's own voices: Hebrew parts in a Hebrew voice when the phone has one.
+  let voices = [];
+  const loadVoices = () => { try { voices = speechSynthesis.getVoices(); } catch (e) {} };
+  if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.addEventListener && speechSynthesis.addEventListener("voiceschanged", loadVoices); }
+  function speakText(text) {
+    if (!("speechSynthesis" in window)) return false;
+    try {
+      speechSynthesis.cancel(); if (!voices.length) loadVoices();
+      const he = voices.find(v => /^(he|iw)/i.test(v.lang));
+      const en = voices.find(v => /^en/i.test(v.lang) && v.localService) || voices.find(v => /^en/i.test(v.lang));
+      const clean = text.replace(/[*_`#>]/g, "").replace(/\s+/g, " ");
+      clean.split(/([֐-׿][֐-׿\s־]*)/).filter(p => p.trim()).forEach(p => {
+        const heb = /[֐-׿]/.test(p);
+        if (heb && !he) return; // no Hebrew voice on this phone: the transliteration is read instead
+        const u = new SpeechSynthesisUtterance(p);
+        u.lang = heb ? "he-IL" : (en ? en.lang : "en-US");
+        const v = heb ? he : en; if (v) u.voice = v;
+        u.rate = heb ? 0.8 : 1;
+        speechSynthesis.speak(u);
+      });
+      return true;
+    } catch (e) { return false; }
+  }
+  const stopSpeaking = () => { try { speechSynthesis.cancel(); } catch (e) {} };
+
+  const STARTERS = [
+    "Aleph has no sound. So what does it do?",
+    "Why does Hebrew read right to left?",
+    "How do I tell ב and כ apart?",
+    "What does בְּרֵאשִׁית mean?"
+  ];
+  function tutor() {
+    const msgHTML = (m, i) => m.role === "user"
+      ? `<div class="msg me">${hebPhrases(esc(m.text))}</div>`
+      : `<div class="msg bot">${fmt(m.text)}<button class="msg-say" data-i="${i}" aria-label="Read this answer aloud">🔊 Listen</button></div>`;
+    view().innerHTML = `<h2>Tutor</h2><p class="sub">Ask anything about Biblical Hebrew, like a letter, a word, or a verse. Type, or tap the mic and ask out loud.</p>
+      <div class="chat" id="chatlog" aria-live="polite">
+        ${chat.length ? chat.map(msgHTML).join("") : `<div class="msg bot"><p>Shalom! I'm your Davar tutor. What would you like to understand better?</p></div>
+          <div class="starters">${STARTERS.map(q => `<button class="starter">${hebPhrases(esc(q))}</button>`).join("")}</div>`}
+        ${tutorBusy ? `<div class="msg bot typing"><span></span><span></span><span></span></div>` : ""}
+      </div>
+      <form class="composer" id="composer">
+        ${SR ? `<button type="button" class="tmic" id="tmic" aria-label="Ask out loud">🎙</button>` : ""}
+        <label for="tq" class="sr-only">Your question</label>
+        <textarea id="tq" rows="1" maxlength="1500" placeholder="Ask a question…"></textarea>
+        <button class="primary" id="tsend" type="submit">Send</button>
+      </form>
+      <div class="chat-tools">
+        <label class="toggle"><input type="checkbox" id="tspeak" ${speakReplies ? "checked" : ""}> Read answers aloud</label>
+        <button class="ghost" id="tnew" ${chat.length ? "" : "disabled"}>New conversation</button>
+      </div>
+      <p class="note">Answers come from Google's Gemini AI and can be wrong, so check them against your lessons. Please don't share personal details.</p>`;
+    const q = $("#tq"), log = $("#chatlog");
+    if (tutorDraft) { q.value = tutorDraft; tutorDraft = ""; }
+    const grow = () => { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 160) + "px"; };
+    q.addEventListener("input", grow); grow();
+    if (q.value) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+    log.querySelectorAll(".starter").forEach(b => b.onclick = () => send(b.textContent));
+    log.querySelectorAll(".msg-say").forEach(b => b.onclick = () => speakText(chat[+b.dataset.i].text));
+    $("#composer").onsubmit = e => { e.preventDefault(); send(q.value); };
+    q.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(q.value); } });
+    $("#tspeak").onchange = e => { speakReplies = e.target.checked; store.set("speakReplies", speakReplies); if (!speakReplies) stopSpeaking(); };
+    $("#tnew").onclick = () => { stopSpeaking(); chat = []; tutorTopic = null; saveChat(); tutor(); };
+    if ($("#tmic")) $("#tmic").onclick = () => listenQuestion(q);
+    const last = log.lastElementChild; if (last && chat.length) last.scrollIntoView({ block: "end" });
+  }
+  function listenQuestion(q) {
+    if (activeRec) { try { activeRec.stop(); } catch (e) {} return; }
+    stopSpeaking();
+    let rec; try { rec = new SR(); } catch (e) { return; }
+    rec.lang = navigator.language || "en-US"; rec.interimResults = true; rec.continuous = false;
+    const btn = $("#tmic"); btn.classList.add("on");
+    rec.onresult = e => { q.value = Array.from(e.results).map(r => r[0].transcript).join(" "); q.dispatchEvent(new Event("input")); if (e.results[e.results.length - 1].isFinal) { activeRec = null; send(q.value); } };
+    rec.onerror = () => {}; rec.onend = () => { activeRec = null; if (btn) btn.classList.remove("on"); };
+    try { rec.start(); activeRec = rec; } catch (e) { btn.classList.remove("on"); }
+  }
+  async function send(text) {
+    text = String(text || "").trim();
+    if (!text || tutorBusy) return;
+    stopSpeaking();
+    chat.push({ role: "user", text }); saveChat();
+    if (!navigator.onLine) { chat.push({ role: "model", text: "The tutor needs an internet connection. Try again when you're back online." }); saveChat(); tutor(); return; }
+    tutorBusy = true; tutor();
+    let answer;
+    try {
+      const r = await fetch(TUTOR_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: chat.slice(-12), context: { lessonsDone: progress.done.length, learnedWords: learnedWords(), topic: tutorTopic } }) });
+      const data = await r.json().catch(() => ({}));
+      answer = r.ok && data.reply ? data.reply : (data.error || "The tutor couldn't answer just now. Try again in a moment.");
+    } catch (e) { answer = "I couldn't reach the tutor. Check your connection and try again."; }
+    tutorBusy = false;
+    chat.push({ role: "model", text: answer }); saveChat();
+    if (location.hash === "#tutor") { tutor(); if (speakReplies) speakText(answer); }
+  }
+
   /* ---------- router ---------- */
   function route() {
     if (player) player.pause();
     if (activeRec) { try { activeRec.abort(); } catch (e) {} activeRec = null; }
+    stopSpeaking();
     const h = location.hash.replace("#", "") || "home";
     const tab = h.startsWith("lesson") ? "home" : h.startsWith("letters") ? "letters" : h;
     document.querySelectorAll("nav a").forEach(a => a.setAttribute("aria-current", a.dataset.tab === tab ? "page" : "false"));
@@ -567,6 +693,7 @@
     else if (h === "letters-trace") trace();
     else if (h === "letters-write") write();
     else if (h === "speak") speak();
+    else if (h === "tutor") tutor();
     else if (h === "read") read();
     else home();
     window.scrollTo(0, 0);
