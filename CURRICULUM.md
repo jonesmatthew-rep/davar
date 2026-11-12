@@ -1,0 +1,46 @@
+# Davar — Scope and Sequence (Lessons 1–20)
+
+Goal of the first 20 lessons: read Genesis 1:1–5 with understanding.
+Method: picture + audio first, meaning from context, English only behind a "Show meaning" tap.
+Each lesson: 4–6 new items, a listen-and-tap quiz, then the items join spaced review.
+Pronunciation: placeholder modern voice (ElevenLabs); to be replaced with recordings later.
+
+## Unit 1 — Things you can point at (Lessons 1–5)
+
+| # | Title | New words | New grammar |
+|---|-------|-----------|-------------|
+| 1 | People | אִישׁ man, אִשָּׁה woman, יֶלֶד boy, יַלְדָּה girl, אָב father, אֵם mother | — |
+| 2 | Sky and land | שֶׁמֶשׁ sun, יָרֵחַ moon, כּוֹכָב star, מַיִם water, עֵץ tree, אֶרֶץ land/earth | — |
+| 3 | Animals | סוּס horse, כֶּלֶב dog, גָּמָל camel, נָחָשׁ serpent, צִפּוֹר bird, דָּג fish | — |
+| 4 | This is… | בַּיִת house, לֶחֶם bread, זֶה this (m), זֹאת this (f) | "This is a ___" with no verb "is" |
+| 5 | The good horse | טוֹב good, רַע bad, גָּדוֹל big, קָטֹן small | הַ "the"; "The ___ is good" |
+
+## Unit 2 — Who and where (Lessons 6–10)
+
+| # | Title | New words | New grammar |
+|---|-------|-----------|-------------|
+| 6 | Many | אֲנָשִׁים men, נָשִׁים women, סוּסִים horses, עֵצִים trees | Plurals -ִים / -וֹת |
+| 7 | I and you | אֲנִי I, אַתָּה you (m), אַתְּ you (f), הוּא he, הִיא she | Pronouns as subjects |
+| 8 | In the house | בְּ in, עַל on, תַּחַת under, לְ to/for | Prepositions joined to words |
+| 9 | And | וְ and, גַּם also, לֹא not | Joining and negating |
+| 10 | Unit review | — | Story: a man, a woman, and a horse |
+
+## Unit 3 — Things happen (Lessons 11–15)
+
+| # | Title | New words | New grammar |
+|---|-------|-----------|-------------|
+| 11 | He walked | הָלַךְ walked, יָשַׁב sat, אָכַל ate, רָאָה saw | Past tense, he-form |
+| 12 | He said | אָמַר said, קָרָא called, שָׁמַע heard | Quoting speech |
+| 13 | God | אֱלֹהִים God, שָׁמַיִם heavens, אוֹר light, חֹשֶׁךְ darkness | Plural form used for God |
+| 14 | Created and made | בָּרָא created, עָשָׂה made, הָיָה was, רֵאשִׁית beginning | Object marker אֵת |
+| 15 | Unit review | — | Story built from Lessons 11–14 |
+
+## Unit 4 — Reading Genesis 1 (Lessons 16–20)
+
+| # | Title | New words | New grammar |
+|---|-------|-----------|-------------|
+| 16 | Day and night | יוֹם day, לַיְלָה night, עֶרֶב evening, בֹּקֶר morning | Numbers one–three |
+| 17 | And God said | וַיֹּאמֶר and he said, וַיְהִי and there was, יְהִי let there be | The "and he did" storytelling form |
+| 18 | Genesis 1:1–2 | תֹהוּ formless, בֹהוּ empty, רוּחַ spirit/wind, פְּנֵי face of, תְהוֹם deep | Construct ("face of the deep") |
+| 19 | Genesis 1:3–5 | וַיַּרְא and he saw, כִּי that, וַיַּבְדֵּל and he separated, בֵּין between | Reading a full passage |
+| 20 | Read it yourself | — | Genesis 1:1–5 read-through with audio and tap-to-gloss |

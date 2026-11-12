@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Davar Hebrew</title>
+<meta name="description" content="Learn to read the Hebrew Bible with pictures, audio, and practice. Free.">
+<meta name="theme-color" content="#1F6F66">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600;700&family=Literata:opsz,wght@7..72,600;7..72,700&family=Noto+Sans+Hebrew:wght@600&family=Noto+Serif+Hebrew:wght@400;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1><a href="#home">Davar <span class="heb">דָּבָר</span></a></h1>
+    <div class="stat" id="stat"></div>
+  </header>
+  <main id="view"></main>
+  <p class="note">Audio is a placeholder voice in modern pronunciation. Pictures are placeholders for lesson art.</p>
+</div>
+<nav aria-label="Main"><div class="tabs">
+  <a href="#home" data-tab="home"><span class="ic" aria-hidden="true">א</span>Lessons</a>
+  <a href="#review" data-tab="review"><span class="ic" aria-hidden="true">ב</span>Review</a>
+  <a href="#speak" data-tab="speak"><span class="ic" aria-hidden="true">ג</span>Speak</a>
+  <a href="#letters" data-tab="letters"><span class="ic" aria-hidden="true">ד</span>Letters</a>
+  <a href="#read" data-tab="read"><span class="ic" aria-hidden="true">ה</span>Read</a>
+</div></nav>
+<script src="data/lessons.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
