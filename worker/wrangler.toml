@@ -1,4 +1,4 @@
-name = "davar-tutor"
+name = "davar"
 main = "src/index.js"
 compatibility_date = "2025-06-01"
 

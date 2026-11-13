@@ -10,7 +10,7 @@ and returns the reply. The key never appears in the app.
 2. **Deploy**: in the Cloudflare dashboard, Workers & Pages → Create → Import a repository → pick
    `jonesmatthew-rep/davar`, set the root directory to `worker`, and deploy. Every push to GitHub then
    redeploys it automatically.
-3. **Add the key**: open the `davar-tutor` Worker → Settings → Variables and Secrets → Add →
+3. **Add the key**: open the `davar` Worker → Settings → Variables and Secrets → Add →
    type **Secret**, name `GEMINI_API_KEY`, paste the key → Deploy.
 4. **Check**: https://tutor.davarhebrew.app/health should show `"keySet": true`.
 
