@@ -86,24 +86,37 @@ export default {
       generationConfig: { temperature: 0.6, maxOutputTokens: 900 }
     };
 
-    const models = [env.GEMINI_MODEL, "gemini-flash-latest", "gemini-2.5-flash"].filter(Boolean);
-    let lastStatus = 500;
+    // Try models in order. A busy model (500/503) gets one quick retry, then the next, lighter model.
+    // A retired model name (404) or a model with no free quota left (429) also moves on to the next one.
+    const models = [env.GEMINI_MODEL, "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest", "gemini-2.5-flash-lite"].filter(Boolean);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    let lastStatus = 500, sawQuota = false;
     for (const model of [...new Set(models)]) {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-        body: JSON.stringify(payload)
-      });
-      lastStatus = r.status;
-      if (r.status === 404) continue; // model name retired: try the next one
-      if (r.status === 429) return reply(429, { error: "The tutor is busy right now. Try again in a minute." });
-      if (!r.ok) break;
-      const data = await r.json();
-      const cand = data.candidates && data.candidates[0];
-      const text = cand && cand.content && Array.isArray(cand.content.parts) ? cand.content.parts.map(p => p.text || "").join("").trim() : "";
-      if (!text) return reply(200, { reply: "I couldn't answer that one. Try asking it a different way." });
-      return reply(200, { reply: text, model });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+          body: JSON.stringify(payload)
+        });
+        lastStatus = r.status;
+        if (r.ok) {
+          const data = await r.json();
+          const cand = data.candidates && data.candidates[0];
+          const text = cand && cand.content && Array.isArray(cand.content.parts) ? cand.content.parts.map(p => p.text || "").join("").trim() : "";
+          if (!text) return reply(200, { reply: "I couldn't answer that one. Try asking it a different way." });
+          return reply(200, { reply: text, model });
+        }
+        const detail = (await r.text().catch(() => "")).slice(0, 500);
+        console.log(`gemini ${model} attempt ${attempt + 1}: ${r.status} ${detail}`); // visible in Cloudflare > Observability
+        if (r.status === 400 || r.status === 401 || r.status === 403) {
+          return reply(502, { error: r.status === 400 ? "The tutor couldn't read that question. Try rewording it." : "The tutor's API key isn't working. Let the app's owner know." });
+        }
+        if (r.status === 429) sawQuota = true;
+        if ((r.status === 500 || r.status === 503) && attempt === 0) { await sleep(700); continue; }
+        break; // 404, 429, or still busy: next model
+      }
     }
-    return reply(502, { error: `The tutor couldn't answer just now (${lastStatus}). Try again.` });
+    if (sawQuota) return reply(429, { error: "The tutor has reached its limit for now. Try again later." });
+    return reply(503, { error: `The tutor is very busy right now (${lastStatus}). Wait a minute and try again.` });
   }
 };
