@@ -1,6 +1,7 @@
 // Davar tutor relay (Cloudflare Worker).
 // The app sends the conversation here; this adds the secret Gemini key and returns the tutor's reply.
-// Secrets/vars (set in the Cloudflare dashboard):  GEMINI_API_KEY (secret), GEMINI_MODEL (optional).
+// Secrets/vars (set in the Cloudflare dashboard):  GEMINI_API_KEY (secret), GEMINI_MODEL (optional),
+// ANTHROPIC_API_KEY (optional secret: Claude answers when Gemini cannot), ANTHROPIC_MODEL (optional).
 
 const ALLOWED_ORIGINS = [
   "https://davarhebrew.app",
@@ -86,37 +87,72 @@ export default {
       generationConfig: { temperature: 0.6, maxOutputTokens: 900 }
     };
 
-    // Try models in order. A busy model (500/503) gets one quick retry, then the next, lighter model.
-    // A retired model name (404) or a model with no free quota left (429) also moves on to the next one.
-    const models = [env.GEMINI_MODEL, "gemini-flash-latest", "gemini-2.5-flash", "gemini-flash-lite-latest", "gemini-2.5-flash-lite"].filter(Boolean);
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    let lastStatus = 500, sawQuota = false;
-    for (const model of [...new Set(models)]) {
-      for (let attempt = 0; attempt < 2; attempt++) {
-        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+    // 1) Gemini: try models in order. A busy model (500/503) gets one quick retry, then the next model.
+    //    A retired model name (404) or a model out of quota (429) also moves on to the next one.
+    const gem = await askGemini(env, payload);
+    if (gem.text) return reply(200, { reply: gem.text, model: gem.model });
+    if (gem.badKey && !env.ANTHROPIC_API_KEY) return reply(502, { error: "The tutor's API key isn't working. Let the app's owner know." });
+    if (gem.badRequest) return reply(502, { error: "The tutor couldn't read that question. Try rewording it." });
+
+    // 2) Backup: Claude, only when Gemini couldn't answer and an Anthropic key is set.
+    if (env.ANTHROPIC_API_KEY) {
+      const cl = await askClaude(env, payload);
+      if (cl.text) return reply(200, { reply: cl.text, model: cl.model });
+    }
+    if (gem.empty) return reply(200, { reply: "I couldn't answer that one. Try asking it a different way." });
+    if (gem.sawQuota) return reply(429, { error: "The tutor has reached its limit for now. Try again later." });
+    return reply(503, { error: `The tutor is very busy right now (${gem.status}). Wait a minute and try again.` });
+  }
+};
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function askGemini(env, payload) {
+  // The stable Flash model first; "latest" names point at Google's newest model, which is busiest.
+  const models = [env.GEMINI_MODEL, "gemini-2.5-flash", "gemini-flash-latest", "gemini-2.5-flash-lite", "gemini-flash-lite-latest"].filter(Boolean);
+  const out = { status: 500, sawQuota: false };
+  for (const model of [...new Set(models)]) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      let r;
+      try {
+        r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
           body: JSON.stringify(payload)
         });
-        lastStatus = r.status;
-        if (r.ok) {
-          const data = await r.json();
-          const cand = data.candidates && data.candidates[0];
-          const text = cand && cand.content && Array.isArray(cand.content.parts) ? cand.content.parts.map(p => p.text || "").join("").trim() : "";
-          if (!text) return reply(200, { reply: "I couldn't answer that one. Try asking it a different way." });
-          return reply(200, { reply: text, model });
-        }
-        const detail = (await r.text().catch(() => "")).slice(0, 500);
-        console.log(`gemini ${model} attempt ${attempt + 1}: ${r.status} ${detail}`); // visible in Cloudflare > Observability
-        if (r.status === 400 || r.status === 401 || r.status === 403) {
-          return reply(502, { error: r.status === 400 ? "The tutor couldn't read that question. Try rewording it." : "The tutor's API key isn't working. Let the app's owner know." });
-        }
-        if (r.status === 429) sawQuota = true;
-        if ((r.status === 500 || r.status === 503) && attempt === 0) { await sleep(700); continue; }
-        break; // 404, 429, or still busy: next model
+      } catch (e) { console.log(`gemini ${model}: network ${e}`); out.status = 502; break; }
+      out.status = r.status;
+      if (r.ok) {
+        const data = await r.json();
+        const cand = data.candidates && data.candidates[0];
+        const text = cand && cand.content && Array.isArray(cand.content.parts) ? cand.content.parts.map(p => p.text || "").join("").trim() : "";
+        if (text) return { text, model };
+        out.empty = true; return out;
       }
+      const detail = (await r.text().catch(() => "")).slice(0, 500);
+      console.log(`gemini ${model} attempt ${attempt + 1}: ${r.status} ${detail}`); // visible in Cloudflare > Observability
+      if (r.status === 400) { out.badRequest = true; return out; }
+      if (r.status === 401 || r.status === 403) { out.badKey = true; return out; }
+      if (r.status === 429) out.sawQuota = true;
+      if ((r.status === 500 || r.status === 503) && attempt === 0) { await sleep(700); continue; }
+      break; // 404, 429, or still busy: next model
     }
-    if (sawQuota) return reply(429, { error: "The tutor has reached its limit for now. Try again later." });
-    return reply(503, { error: `The tutor is very busy right now (${lastStatus}). Wait a minute and try again.` });
   }
-};
+  return out;
+}
+
+async function askClaude(env, payload) {
+  const model = env.ANTHROPIC_MODEL || "claude-haiku-5-5";
+  const messages = payload.contents.map(c => ({ role: c.role === "model" ? "assistant" : "user", content: c.parts.map(p => p.text).join("") }));
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+      body: JSON.stringify({ model, max_tokens: 900, temperature: 0.6, system: payload.systemInstruction.parts[0].text, messages })
+    });
+    if (!r.ok) { console.log(`claude ${model}: ${r.status} ${(await r.text().catch(() => "")).slice(0, 500)}`); return {}; }
+    const data = await r.json();
+    const text = Array.isArray(data.content) ? data.content.filter(b => b.type === "text").map(b => b.text).join("").trim() : "";
+    return text ? { text, model } : {};
+  } catch (e) { console.log(`claude ${model}: network ${e}`); return {}; }
+}
