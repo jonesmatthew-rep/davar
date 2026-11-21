@@ -560,6 +560,38 @@
     $("#slow").onclick = () => play(R.audio, true);
   }
 
+  /* ---------- share ---------- */
+  const SHARE_URL = "https://davarhebrew.app";
+  const SHARE_TEXT = "Learn to read the Bible in Hebrew with Davar, a free app with pictures, audio and practice.";
+  function share() {
+    const canShare = !!navigator.share;
+    view().innerHTML = `<h2>Share Davar</h2><p class="sub">Let someone scan this code with their phone camera, or send them the link.</p>
+      <div class="card share-card">
+        <img class="share-qr" src="img/share-qr.svg" alt="QR code that opens davarhebrew.app" width="240" height="240">
+        <p class="share-url" id="shareUrl">davarhebrew.app</p>
+        <div class="row">
+          ${canShare ? `<button class="primary" id="shareNative">Share link…</button>` : ""}
+          <button id="shareCopy" ${canShare ? "" : 'class="primary"'}>Copy link</button>
+        </div>
+        <div class="feedback" id="shareMsg" aria-live="polite"></div>
+      </div>
+      <p class="note">Tip: turn your screen brightness up so the code scans easily. On their phone, they can add Davar to the home screen from the Share menu (iPhone) or the ⋮ menu (Android).</p>`;
+    const msg = $("#shareMsg");
+    if (canShare) $("#shareNative").onclick = async () => {
+      try { await navigator.share({ title: "Davar", text: SHARE_TEXT, url: SHARE_URL }); }
+      catch (e) { if (e && e.name !== "AbortError") { msg.className = "feedback"; msg.textContent = "Sharing didn't open. Use Copy link instead."; } }
+    };
+    $("#shareCopy").onclick = async () => {
+      try { await navigator.clipboard.writeText(SHARE_URL); msg.className = "feedback good"; msg.textContent = "Link copied. Paste it into a text or email."; }
+      catch (e) {
+        // clipboard blocked: select the address so it can be copied by hand
+        const r = document.createRange(); r.selectNodeContents($("#shareUrl"));
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        msg.className = "feedback"; msg.textContent = "Press and hold the address above to copy it.";
+      }
+    };
+  }
+
   /* ---------- AI tutor ---------- */
   const TUTOR_URL = window.DAVAR_TUTOR_URL || "https://tutor.davarhebrew.app/chat";
   let chat = store.get("chat", []);                 // [{role: "user"|"model", text}]
@@ -694,6 +726,7 @@
     else if (h === "letters-write") write();
     else if (h === "speak") speak();
     else if (h === "tutor") tutor();
+    else if (h === "share") share();
     else if (h === "read") read();
     else home();
     window.scrollTo(0, 0);
